@@ -1,1 +1,1 @@
-# RBE595-Deep-Learning-for-Adv-Perception
+# RBE526 Human-Robot Interaction Coursework
