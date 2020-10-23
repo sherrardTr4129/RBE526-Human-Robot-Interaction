@@ -1,0 +1,3 @@
+sensor_msgs/JointState left_arm
+---
+sensor_msgs/JointState both_arm
