@@ -24,6 +24,4 @@
   <include file="$(find relaxed_ik)/launch/ros_controllers.launch"/>
 
   <node name="multiplex_node" pkg="relaxed_ik" type="multiplex_node.py" output="screen" />
-  <node name="move_left_arm" pkg="relaxed_ik" type="move_left_arm.py" output="screen" />
-
 </launch>

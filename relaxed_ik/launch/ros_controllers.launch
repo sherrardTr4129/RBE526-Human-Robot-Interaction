@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-
+  <arg name="right_prefix" default="right_arm_" />
+  <arg name="left_prefix" default="left_arm_" />
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find relaxed_ik)/src/RelaxedIK/Config/ros_controllers.yaml" command="load"/>
 
@@ -11,5 +12,6 @@
           left_arm_controller
           right_arm_controller
           "/>
+
 
 </launch>
