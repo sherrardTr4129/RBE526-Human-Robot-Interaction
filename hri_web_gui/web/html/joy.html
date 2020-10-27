@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<!--
+ The MIT License (MIT)
+
+ This file is part of the JoyStick Project (https://github.com/bobboteck/JoyStick).
+ Copyright (c) 2015 Roberto D'Amico (Bobboteck), Trevor Sherrard (SherrardTr4129)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+-->
+<html>
+	<head>
+		<title>Joy</title>
+		<meta charset="utf-8">
+		<style>
+*
+{
+	box-sizing: border-box;
+}
+body
+{
+	margin: 0px;
+	padding: 0px;
+	font-family: monospace;
+}
+.row
+{
+	display: inline-flex;
+	clear: both;
+}
+.columnLateral
+{
+  float: left;
+  width: 15%;
+  min-width: 300px;
+}
+.columnCetral
+{
+  float: left;
+  width: 70%;
+  min-width: 300px;
+}
+
+.columns {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	margin: 5px 0;
+}
+.column {
+	flex: 1;
+	border: 1px solid gray;
+	margin: 2px;
+	padding: 10px;
+	&:first-child { margin-left: 0; }
+	&:last-child { margin-right: 0; }
+	
+}
+		</style>
+		<script src="../js/joy.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		</head>
+	<body>
+		<section class="columns">
+			<div class="column" align="center">
+				<div id="joy1" style="width:200px;height:200px;margin:50px">
+					<h2>Vertical: X</h2>
+					<h2>Horizontal: Y</h2>
+				</div>
+		        </div>
+		
+                        <div class="column" align="center">
+                                <div id="joy2" style="width:200px;height:200px;margin:50px">
+					<h2>Verticle: Z</h2>
+					<h2>Horizontal: G</h2>
+                                </div>
+                        </div>
+		</section>
+		<section class="columns">
+			<div class="column" align="center">
+				<iframe img src="http://localhost:8080/stream_viewer?topic=/cam/camera1/image_raw1" width="800" height="900"></iframe>
+			</div>
+		</section>
+
+		<script type="text/javascript">
+		var Joy1 = new JoyStick('joy1');
+		var xyURL = "http://localhost:5000/xyJoyPost"
+		var xyData = {
+			"x": 0,
+			"y": 0
+		}
+
+		function sendXYData()
+		{
+			$.ajax({type: 'POST',
+				url: xyURL,
+				data: JSON.stringify (xyData),
+				success: function(data) {  },
+				contentType: "application/json",
+				dataType: 'json'
+			});
+		}
+
+		setInterval(function(){ xyData.x=Joy1.GetX(); }, 50);
+		setInterval(function(){ xyData.y=Joy1.GetY(); }, 50);
+		setInterval(function(){sendXYData()}, 50);
+
+		var Joy2 = new JoyStick('joy2');
+                var gzURL = "http://localhost:5000/gzJoyPost"
+                var gzData = {
+                        "g": 0,
+                        "z": 0
+                }
+
+                function sendGZData()
+                {
+                        $.ajax({type: 'POST',
+                                url: gzURL,
+                                data: JSON.stringify (gzData),
+                                success: function(data) {  },
+                                contentType: "application/json",
+                                dataType: 'json'
+                        });
+                }
+                setInterval(function(){ gzData.g=Joy2.GetX(); }, 50);
+                setInterval(function(){ gzData.z=Joy2.GetY(); }, 50);
+                setInterval(function(){sendGZData()}, 50);
+
+		</script>
+	</body>
+</html>
