@@ -13,18 +13,32 @@ from flask_cors import CORS
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool
 
+# initialize flask
 app = Flask(__name__)
 CORS(app)
 
+# setup globals
 global axisList
 global gripperValList
 global camObjList
+
+# initalize globals
 axisList = [0, 0, 0]
 gripperValList = [0]
 camObjList = [False, False, True]
 
 @app.route('/xyJoyPost', methods=['POST']) 
 def xyJoyDataCB():
+    """
+    This function serves as the API endpoint to which updates from the xy
+    joystick are POSTed from the frontend javascript. This function extracts
+    the message payload and updates a global variable with the contents
+
+    params:
+        None
+    returns:
+        status (String)
+    """
     global axisList
     xyDict = request.get_json()
     axisList[0] = int(xyDict['x'])
@@ -32,7 +46,17 @@ def xyJoyDataCB():
     return "OK"
 
 @app.route('/zJoyPost', methods=['POST'])
-def gzJoyDataCB():
+def zJoyDataCB():
+    """
+    This function serves as the API endpoint to which updates from the z-axis joystick
+    are POSTed to. This function extracts the message payload and updates a
+    global veriable with the contents.
+
+    params:
+        None
+    returns:
+        status (String)
+    """
     global axisList
     gzDict = request.get_json()
     axisList[2] = int(gzDict['z'])
@@ -40,6 +64,15 @@ def gzJoyDataCB():
 
 @app.route('/closeGripper', methods=['POST'])
 def closeGripperCB():
+    """
+    This function serves as the API enpoint for the closeGripper button. This function
+    will decrement a global variable representing the current state of the gripper by one.
+
+    params:
+        None
+    returns:
+        status (String)
+    """
     global gripperValList 
     valDict = request.get_json()
     gripperValList[0] -= int(valDict['val'])
@@ -51,6 +84,15 @@ def closeGripperCB():
 
 @app.route('/openGripper', methods=['POST'])
 def openGripperCB():
+    """
+    This function serves as the API endpoint for the openGripper button. This function
+    will increment a global variable representing the current state of the gripper by one.
+
+    params:
+        None
+    returns:
+        status (String)
+    """
     global gripperValList
     valDict = request.get_json()
     gripperValList[0] += int(valDict['val'])
@@ -62,6 +104,16 @@ def openGripperCB():
 
 @app.route('/setCamObjectives', methods=['POST'])
 def setCamObjectivesCB():
+    """
+    This function serves as the API endpoint for the camera control objective
+    function HTML form. When the form is POSTed to this function, the state of the
+    checkboxes are extracted, and global variables are updated accordingly.
+
+    params:
+        None
+    returns:
+        status (String)
+    """
     global camObjList
     camObjList[0] = request.form.get('camObj1') != None
     camObjList[1] = request.form.get('camObj2') != None
@@ -69,6 +121,18 @@ def setCamObjectivesCB():
     return "Camera optimization objectives set. Please use the back button to resume control."
 
 def publishLoopThread(joyPub, camObjPubList):
+    """
+    This function will be instantiated as a thread. This thread will continually
+    publish the global variables that are being updated in the above callbacks
+    on a set interval of 200ms, and when other specific criteria are met.
+
+    params:
+        joyPub (sensor_msgs/Joy publisher obj): The instantiated Joy publisher object
+        camObjPubList (std_msgs/Bool publisher obj[]): A list of instantiated Bool publisher objects
+
+    returns:
+        None
+    """
     # setup globals
     global axisList
     global gripperValList
@@ -118,6 +182,7 @@ def main():
     rospy.init_node('flask_to_joy')
     joyPub = rospy.Publisher('virtualJoystick', Joy, queue_size=1)
 
+    # setup camera control objective boolean publishers
     camObjPubList = []
     camObjPubList.append(rospy.Publisher('isOcclusionAvoidance', Bool, queue_size=1))
     camObjPubList.append(rospy.Publisher('isSaliencyMaximization', Bool, queue_size=1))
