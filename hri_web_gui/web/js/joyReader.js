@@ -1,3 +1,9 @@
+/* Author: Trevor Sherrard
+ * Course: Human Robot Interaction
+ * Project: Autonomous Camera Control Optimization
+ * Since: November 1st, 2020
+ */
+
 var Joy1 = new JoyStick('joy1');
 var xyURL = "http://localhost:5000/xyJoyPost";
 var xyData = {
@@ -18,7 +24,7 @@ function sendXYData()
 
 setInterval(function(){ xyData.x=Joy1.GetX(); }, 50);
 setInterval(function(){ xyData.y=Joy1.GetY(); }, 50);
-setInterval(function(){sendXYData()}, 300);
+setInterval(function(){sendXYData()}, 200);
 
 var Joy2 = new JoyStick('joy2');
 var zURL = "http://localhost:5000/zJoyPost"
@@ -39,4 +45,4 @@ function sendZData()
 
 setInterval(function(){ zData.g=Joy2.GetX(); }, 50);
 setInterval(function(){ zData.z=Joy2.GetY(); }, 50);
-setInterval(function(){sendZData()}, 300);
+setInterval(function(){sendZData()}, 200);

@@ -109,9 +109,9 @@ def publishLoopThread(joyPub, camObjPubList):
         camObjPubList[1].publish(camObjList[1])
         camObjPubList[2].publish(camObjList[2])
 
-        # update delay of 300ms to match refresh rate of 300ms
+        # update delay of 200ms to match refresh rate of 200ms
         # in joystick data recieved from webpage
-        time.sleep(0.3)
+        time.sleep(0.2)
 
 def main():
     # init node
