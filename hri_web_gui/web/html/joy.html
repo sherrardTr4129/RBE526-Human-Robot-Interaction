@@ -89,6 +89,7 @@ body
 
 		</style>
 		<script src="../js/joy.js"></script>
+		<script src="../js/button.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		</head>
 	<body>
@@ -109,16 +110,23 @@ body
 			<div class="column" align="center">
                                 <div id="buttons" style="width:200px;height:200px;margin:50px">
 					<h2>Gipper Controls</h2>
-                                	<button class="block" onclick="myFunction()">Open Gripper</button>
+                                	<button class="block" onclick="openFunction()">Open Gripper</button>
 					<h2></h2>
-					<button class="block" onclick="myFunction()">Close Gripper</button>
+					<button class="block" onclick="closeFunction()">Close Gripper</button>
 				</div>
                         </div>
 		</section>
+		
+		<section class="columns">
+                        <div class="column" align="center">
+                                <iframe img src="http://localhost:8080/stream_viewer?topic=/cam/camera1/image_raw1" width="800" height="900"></iframe>
+                        </div>
+                </section>
+
 		<section class="columns">
                         <div class="column" align="center">
                         	<h2>Select Current Camera Control Objectives</h2>
-				<form action="/action_page.php" method="get">
+				<form action="http://localhost:5000/setCamObjectives" method="post">
 					<input type="checkbox" name="camObj1" value="camObj1">
 					<label for="camObj1">Occlusion Avoidance </label><br>
 					<input type="checkbox" name="camObj2" value="camObj2">
@@ -129,13 +137,7 @@ body
 				</form>
 			</div>
                 </section>
-
-		<section class="columns">
-			<div class="column" align="center">
-				<iframe img src="http://localhost:8080/stream_viewer?topic=/cam/camera1/image_raw1" width="800" height="900"></iframe>
-			</div>
-		</section>
-
+		
 		<script type="text/javascript">
 		var Joy1 = new JoyStick('joy1');
 		var xyURL = "http://localhost:5000/xyJoyPost"
@@ -157,28 +159,27 @@ body
 
 		setInterval(function(){ xyData.x=Joy1.GetX(); }, 50);
 		setInterval(function(){ xyData.y=Joy1.GetY(); }, 50);
-		setInterval(function(){sendXYData()}, 50);
+		setInterval(function(){sendXYData()}, 300);
 
 		var Joy2 = new JoyStick('joy2');
-                var gzURL = "http://localhost:5000/gzJoyPost"
-                var gzData = {
-                        "g": 0,
+                var zURL = "http://localhost:5000/zJoyPost"
+		var zData = {
                         "z": 0
                 }
 
-                function sendGZData()
+                function sendZData()
                 {
-                        $.ajax({type: 'POST',
-                                url: gzURL,
-                                data: JSON.stringify (gzData),
+			$.ajax({type: 'POST',
+                                url: zURL,
+                                data: JSON.stringify (zData),
                                 success: function(data) {  },
                                 contentType: "application/json",
                                 dataType: 'json'
                         });
                 }
-                setInterval(function(){ gzData.g=Joy2.GetX(); }, 50);
-                setInterval(function(){ gzData.z=Joy2.GetY(); }, 50);
-                setInterval(function(){sendGZData()}, 50);
+                setInterval(function(){ zData.g=Joy2.GetX(); }, 50);
+                setInterval(function(){ zData.z=Joy2.GetY(); }, 50);
+                setInterval(function(){sendZData()}, 300);
 
 		</script>
 	</body>
