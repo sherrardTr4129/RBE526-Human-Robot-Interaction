@@ -1,0 +1,13 @@
+<launch>
+
+<!-- Arguments -->
+
+    <arg name="robot_name" default="trina2"/>
+    <arg name="robot_name_1" default="$(arg robot_name)_1"/>
+ 
+<group ns="$(arg robot_name_1)">
+        <!-- Home the robot -->
+        <node name="home_the_arm" pkg="trina_teleop" type="teleop_node.py" output="screen" respawn="false"/>
+</group>
+ 
+</launch>
