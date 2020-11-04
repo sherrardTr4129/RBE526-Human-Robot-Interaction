@@ -18,12 +18,12 @@ app = Flask(__name__)
 CORS(app)
 
 # setup globals
-global axisList
+global x,y,z,yaw,p,r
 global gripperValList
 global camObjList
 
 # initalize globals
-axisList = [0, 0, 0]
+x,y,z,yaw,p,r = (0, 0, 0, 0, 0, 0)
 gripperValList = [0]
 camObjList = [False, False, True]
 
@@ -39,10 +39,10 @@ def xyJoyDataCB():
     returns:
         status (String)
     """
-    global axisList
+    global x,y
     xyDict = request.get_json()
-    axisList[0] = int(xyDict['x'])
-    axisList[1] = int(xyDict['y'])
+    x = float(xyDict['x'])
+    y = float(xyDict['y'])
     return "OK"
 
 @app.route('/zJoyPost', methods=['POST'])
@@ -57,10 +57,46 @@ def zJoyDataCB():
     returns:
         status (String)
     """
-    global axisList
+    global z
     gzDict = request.get_json()
-    axisList[2] = int(gzDict['z'])
+    z = float(gzDict['z'])
     return "OK"
+
+@app.route('/yawPitchJoyPost', methods=['POST'])
+def yawPitchJoyDataCB():
+    """
+    This function serves as the API endpoint to which updates from the xy
+    joystick are POSTed from the frontend javascript. This function extracts
+    the message payload and updates a global variable with the contents
+
+    params:
+        None
+    returns:
+        status (String)
+    """
+    global yaw,p
+    yawPitchDict = request.get_json()
+    yaw = float(yawPitchDict['yaw'])
+    p = float(yawPitchDict['pitch'])
+    return "OK"
+
+@app.route('/rollJoyPost', methods=['POST'])
+def rollJoyDataCB():
+    """
+    This function serves as the API endpoint to which updates from the xy
+    joystick are POSTed from the frontend javascript. This function extracts
+    the message payload and updates a global variable with the contents
+
+    params:
+        None
+    returns:
+        status (String)
+    """
+    global r
+    rollDict = request.get_json()
+    r = float(rollDict['roll'])
+    return "OK"
+
 
 @app.route('/closeGripper', methods=['POST'])
 def closeGripperCB():
@@ -134,16 +170,24 @@ def publishLoopThread(joyPub, camObjPubList):
         None
     """
     # setup globals
-    global axisList
+    global x,y,z,yaw,p,r
     global gripperValList
     global camObjList
 
     # initialize control variables
-    zeroList = [0,0,0]
+    zeroList = [0,0,0,0,0,0]
     zeroCount = 0
     lastGripperVal = 0
 
     while not rospy.is_shutdown():
+        # construct axisList
+        axisList = [x,y,z,yaw,p,r]
+
+        # scale each element
+        for i in range(len(axisList)):
+            if(axisList[i] != 0):
+                axisList[i] = axisList[i]/100
+
         # always publish axis or button values change
         if(axisList != zeroList or gripperValList[0] != lastGripperVal):
             JoyMessage = Joy()
@@ -175,7 +219,7 @@ def publishLoopThread(joyPub, camObjPubList):
 
         # update delay of 200ms to match refresh rate of 200ms
         # in joystick data recieved from webpage
-        time.sleep(0.2)
+        time.sleep(0.3)
 
 def main():
     # init node

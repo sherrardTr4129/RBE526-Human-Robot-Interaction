@@ -94,17 +94,28 @@ body
 		</head>
 	<body>
 		<section class="columns">
-			<!--
 			<div class="column" align="center">
 				<div id="joy1" style="width:200px;height:200px;margin:30px">
-					<h2>Vertical: X-axis</h2>
-					<h2>Horizontal: Y-axis</h2>
+					<h2>Vertical: Y-axis</h2>
+					<h2>Horizontal: X-axis</h2>
 				</div>
 		        </div>
                         <div class="column" align="center">
                                 <div id="joy2" style="width:200px;height:200px;margin:50px">
 					<h2>Vertical:</h2>
 					<h2>Z-axis </h2>
+                                </div>
+                        </div>
+			<div class="column" align="center">
+                                <div id="joy3" style="width:200px;height:200px;margin:30px">
+                                        <h2>Vertical: Arm Yaw </h2>
+                                        <h2>Horizontal: Arm Pitch</h2>
+                                </div>
+                        </div>
+			<div class="column" align="center">
+                                <div id="joy4" style="width:200px;height:200px;margin:30px">
+					</br>
+                                        <h2>Vertical: Arm Roll</h2>
                                 </div>
                         </div>
 			<div class="column" align="center">
@@ -115,15 +126,11 @@ body
 					<button class="block" onclick="closeFunction()">Close Gripper</button>
 				</div>
                         </div>
-			-->
 		</section> 
 		
 
 		<section class="columns">
                         <div class="column" align="center">
-				<h1>RBE526 Robot Control GUI</h1>
-				<p>Please connect your controller to the computer and launch the required joyStick nodes. Once the Gazebo simulation loads, the camera view will be
-				visable in the window below. You can also select what camera control objectives you would like to have active by selecting them in the menu below and clicking submit.</p>
                                 <iframe img src="http://localhost:8080/stream_viewer?topic=/cam/camera1/image_raw1" width="800" height="900"></iframe>
                         </div>
                 </section>

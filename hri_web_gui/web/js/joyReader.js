@@ -24,7 +24,7 @@ function sendXYData()
 
 setInterval(function(){ xyData.x=Joy1.GetX(); }, 50);
 setInterval(function(){ xyData.y=Joy1.GetY(); }, 50);
-setInterval(function(){sendXYData()}, 200);
+setInterval(function(){ sendXYData() }, 200);
 
 var Joy2 = new JoyStick('joy2');
 var zURL = "http://localhost:5000/zJoyPost"
@@ -43,6 +43,49 @@ function sendZData()
 	});
 }
 
-setInterval(function(){ zData.g=Joy2.GetX(); }, 50);
 setInterval(function(){ zData.z=Joy2.GetY(); }, 50);
-setInterval(function(){sendZData()}, 200);
+setInterval(function(){ sendZData() }, 200);
+
+var Joy3 = new JoyStick('joy3');
+var yawPitchURL = "http://localhost:5000/yawPitchJoyPost";
+var yawPitchData = {
+        "yaw": 0,
+        "pitch": 0
+};
+
+function sendYawPitchData()
+{
+        $.ajax({type: 'POST',
+                url: yawPitchURL,
+                data: JSON.stringify (yawPitchData),
+                success: function(data) {  },
+                contentType: "application/json",
+                dataType: 'json'
+        });
+}
+
+setInterval(function(){ yawPitchData.pitch = Joy3.GetX(); }, 50);
+setInterval(function(){ yawPitchData.yaw = Joy3.GetY(); }, 50);
+setInterval(function(){ sendYawPitchData() }, 200);
+setInterval(function(){ console.log(yawPitchData) }, 200);
+
+var Joy4 = new JoyStick('joy4');
+var rollURL = "http://localhost:5000/rollJoyPost"
+var rollData = {
+        "roll": 0
+}
+
+function sendRollData()
+{
+        $.ajax({type: 'POST',
+                url: rollURL,
+                data: JSON.stringify (rollData),
+                success: function(data) {  },
+                contentType: "application/json",
+                dataType: 'json'
+        });
+}
+
+setInterval(function(){ rollData.roll=Joy4.GetY(); }, 50);
+setInterval(function(){ sendRollData() }, 200);
+
