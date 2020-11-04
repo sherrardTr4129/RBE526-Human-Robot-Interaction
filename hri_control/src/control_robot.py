@@ -13,9 +13,10 @@ from math import pi
 from std_msgs.msg import String
 from std_srvs.srv import Empty
 from moveit_commander.conversions import pose_to_list
-from RoboPuppetMQP.msg import joint_angle
+# from RoboPuppetMQP.msg import joint_angle
 from sensor_msgs.msg import Joy
-global w,x,y,z
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
+global x,y,z, roll, pitch, yaw, ox, oy, oz, ow
 
 class MoveGroupPythonInteface(object):
     """MoveGroupPythonInteface"""
@@ -56,11 +57,27 @@ class MoveGroupPythonInteface(object):
         # In practice, you should use the class variables directly unless you have a good
         # reason not to.
         move_group = self.move_group1
-        global w, x, y, z
-        w =w + joy.buttons[6]*0.05
-        x = x + joy.buttons[1]*0.05-joy.buttons[2]*0.05
-        y= y + joy.buttons[3]*0.05-joy.buttons[0]*0.05
-        z = z + joy.buttons[7] * 0.05
+        global x, y, z, roll, pitch, yaw, ox, oy, oz, ow
+
+        ## ----- Control based on Ninetendo(Jialin's) Joystick -----
+        current_pose = move_group.get_current_rpy()
+        roll = current_pose[0] + joy.axes[4]*.3
+        pitch = current_pose[1] + joy.axes[5]*.3
+        yaw = current_pose[2] +  joy.axes[3]*.3
+        x = x + joy.buttons[0]*0.05-joy.buttons[2]*0.05  
+        y= y + joy.buttons[3]*0.05-joy.buttons[1]*0.05  
+        z = z + joy.buttons[7] * 0.05-joy.buttons[6]*0.05
+        arr = quaternion_from_euler(roll,pitch,yaw)
+        ox = arr[0]
+        oy = arr[1]
+        oz = arr[2]
+        ow = arr[3]
+
+        ## ----- Control based on Xbox(Jack's) Joystick -----
+        # x = x + joy.buttons[1]*0.05-joy.buttons[2]*0.05
+        # y= y + joy.buttons[3]*0.05-joy.buttons[0]*0.05
+        # z = z + joy.buttons[7] * 0.05
+        
         ## BEGIN_SUB_TUTORIAL plan_to_pose
         ##
         ## Planning to a Pose Goal
@@ -68,15 +85,23 @@ class MoveGroupPythonInteface(object):
         ## We can plan a motion for this group to a desired pose for the
         ## end-effector:
         pose_goal = geometry_msgs.msg.Pose()
-        pose_goal.orientation.w = 0.0
-        pose_goal.orientation.x = 1.0
-        pose_goal.orientation.y = 0.0
-        pose_goal.orientation.z = 0.0
+        pose_goal.orientation.w = ow
+        pose_goal.orientation.x = ox
+        pose_goal.orientation.y = oy
+        pose_goal.orientation.z = oz
+
+        ## If you want the end-effector to be prependicular to the groud
+        # pose_goal.orientation.w = 0.0
+        # pose_goal.orientation.x = 1.0
+        # pose_goal.orientation.y = 0.0
+        # pose_goal.orientation.z = 0.0
+
         pose_goal.position.x = x
         pose_goal.position.y = y
         pose_goal.position.z = z
 
         move_group.set_pose_target(pose_goal)
+        move_group.set_goal_tolerance = 0.08
         #rospy.loginfo("going to" + str(pose_goal.position.x) + "    "+ str(pose_goal.position.y) + "    "+ str(pose_goal.position.z))
         while True:
             plan = move_group.go(wait=True)
@@ -280,14 +305,20 @@ def main():
         interface = MoveGroupPythonInteface()
         interface.home_robot()
         rospy.sleep(5)
-        global w, x, y, z
+        global x, y, z, roll, pitch, yaw, ox, oy, oz, ow
         current_pose = interface.move_group1.get_current_pose().pose
-        w = current_pose.orientation.w
+        ox = current_pose.orientation.x
+        oy = current_pose.orientation.y
+        oz = current_pose.orientation.z
+        ow = current_pose.orientation.w
+        (r, p, y) = euler_from_quaternion([ox, oy, oz, ow])
+        roll = r
+        pitch = p
+        yaw = y
         x =current_pose.position.x
         y=current_pose.position.y
         z= current_pose.position.z
-        interface.go_to_cat_goal(0.2,0.3,0.7,1.0)
-
+        # interface.go_to_cat_goal(0.2,0.3,0.7,1.0)
 
 
     except rospy.ROSInterruptException:
