@@ -74,24 +74,27 @@ class MoveGroupPythonInteface(object):
         move_group = self.move_group1
         global x, y, z, roll, pitch, yaw, ox, oy, oz, ow
 
-        ## ----- Control based on Ninetendo(Jialin's) Joystick -----
         current_pose = move_group.get_current_rpy()
-        roll = current_pose[0] + joy.axes[4]*.3
-        pitch = current_pose[1] + joy.axes[5]*.3
-        yaw = current_pose[2] +  joy.axes[3]*.3
-        x = x + joy.buttons[0]*0.05-joy.buttons[2]*0.05
-        y= y + joy.buttons[3]*0.05-joy.buttons[1]*0.05
-        z = z + joy.buttons[7] * 0.05-joy.buttons[6]*0.05
+        for i in range(0,6):
+            if joy.axes[i] == 1 or joy.axes[i] == -1:
+                if i == 0:
+                    x += -1*joy.axes[i]*0.05
+                if i == 1:
+                    y += joy.axes[i]*0.05
+                if i == 2:
+                    z += joy.axes[i]*0.05
+                if i == 3:
+                    yaw = current_pose[2] +  joy.axes[i]*.15
+                if i == 4:
+                    roll = current_pose[0] + joy.axes[i]*.15
+                if i == 5:
+                    pitch = current_pose[1] + joy.axes[i]*.15
+          
         arr = quaternion_from_euler(roll,pitch,yaw)
         ox = arr[0]
         oy = arr[1]
         oz = arr[2]
         ow = arr[3]
-
-        ## ----- Control based on Xbox(Jack's) Joystick -----
-        # x = x + joy.buttons[1]*0.05-joy.buttons[2]*0.05
-        # y= y + joy.buttons[3]*0.05-joy.buttons[0]*0.05
-        # z = z + joy.buttons[7] * 0.05
 
         ## BEGIN_SUB_TUTORIAL plan_to_pose
         ##
@@ -111,8 +114,8 @@ class MoveGroupPythonInteface(object):
         # pose_goal.orientation.y = 0.0
         # pose_goal.orientation.z = 0.0
 
-        pose_goal.position.x = x
-        pose_goal.position.y = y
+        pose_goal.position.x = y
+        pose_goal.position.y = x
         pose_goal.position.z = z
 
         move_group.set_pose_target(pose_goal)
