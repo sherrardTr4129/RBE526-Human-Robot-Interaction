@@ -12,6 +12,8 @@ import geometry_msgs.msg
 from math import pi
 from std_msgs.msg import String
 from std_srvs.srv import Empty
+from constants import *
+from control_msgs.msg import GripperCommandActionGoal
 from moveit_commander.conversions import pose_to_list
 # from RoboPuppetMQP.msg import joint_angle
 from sensor_msgs.msg import Joy
@@ -45,14 +47,27 @@ class MoveGroupPythonInteface(object):
         move_group2 = moveit_commander.MoveGroupCommander(group2_name)
         #rospy.Subscriber('/desired_angle_left', joint_angle, self.move_left_arm, queue_size=1)
         #rospy.Subscriber('/desired_angle_right', joint_angle, self.move_right_arm, queue_size=1)
-        rospy.Subscriber('/joy', Joy, self.go_to_pose_goal, queue_size=1)
+        rospy.Subscriber('/virtualJoystick', Joy, self.go_to_pose_goal, queue_size=1)
+        self.pubg = rospy.Publisher('/'+robot_prefix+'/left_arm_robotiq_2f_85_gripper_controller/gripper_cmd/goal',
+                                            GripperCommandActionGoal, queue_size=1)
         # Misc variables
         self.robot = robot
         self.scene = scene
         self.move_group1 = move_group1
         self.move_group2 = move_group2
 
+    def send_gripper_cmd(self, pos):
+        #rospy.loginfo("Send Gripper Command")
+        lgmsg = GripperCommandActionGoal()
+        lgmsg.header.seq = 0
+        lgmsg.goal.command.position = 1 - pos/10.
+        self.pubg.publish(lgmsg)
+
+
     def go_to_pose_goal(self,joy):
+        # ok gripper works
+        self.send_gripper_cmd(joy.buttons[0])
+
         # Copy class variables to local variables to make the web tutorials more clear.
         # In practice, you should use the class variables directly unless you have a good
         # reason not to.
@@ -64,8 +79,8 @@ class MoveGroupPythonInteface(object):
         roll = current_pose[0] + joy.axes[4]*.3
         pitch = current_pose[1] + joy.axes[5]*.3
         yaw = current_pose[2] +  joy.axes[3]*.3
-        x = x + joy.buttons[0]*0.05-joy.buttons[2]*0.05  
-        y= y + joy.buttons[3]*0.05-joy.buttons[1]*0.05  
+        x = x + joy.buttons[0]*0.05-joy.buttons[2]*0.05
+        y= y + joy.buttons[3]*0.05-joy.buttons[1]*0.05
         z = z + joy.buttons[7] * 0.05-joy.buttons[6]*0.05
         arr = quaternion_from_euler(roll,pitch,yaw)
         ox = arr[0]
@@ -77,7 +92,7 @@ class MoveGroupPythonInteface(object):
         # x = x + joy.buttons[1]*0.05-joy.buttons[2]*0.05
         # y= y + joy.buttons[3]*0.05-joy.buttons[0]*0.05
         # z = z + joy.buttons[7] * 0.05
-        
+
         ## BEGIN_SUB_TUTORIAL plan_to_pose
         ##
         ## Planning to a Pose Goal
