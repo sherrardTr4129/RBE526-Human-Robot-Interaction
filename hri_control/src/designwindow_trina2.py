@@ -34,7 +34,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from pyqtgraph import PlotWidget, plot
 from msg_arduino.msg import JointPositions
 from sensor_msgs.msg import Image
-from RoboPuppetMQP.msg import joint_angle
+from hri_control.msg import joint_angle
 # from qwt.qt.QtGui import QApplication, QPen
 # from qwt.qt.QtCore import Qt
 global leftAngleList

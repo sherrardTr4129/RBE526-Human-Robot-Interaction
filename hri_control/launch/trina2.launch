@@ -30,8 +30,8 @@
 
     <!-- Gazebo environment -->
     <env name="GAZEBO_MODEL_PATH" value="$(find hospital_gazebo)/models:${GAZEBO_MODEL_PATH}" />
-    <arg name="world_name" default="hospital_small"/>
-    <arg name="world_file" default="$(find hospital_gazebo)/worlds/$(arg world_name).world"/>
+    <arg name="world_name" default="stack"/>
+    <arg name="world_file" default="$(find hri_control)/map/$(arg world_name).world"/>
     
 
     <!-- Start Gazebo -->
@@ -67,8 +67,8 @@
             <arg name="gripper" value="$(arg gripper)" />
             <arg name="cyclic_data_publish_rate"  value="$(arg cyclic_data_publish_rate)"/>
             
-            <arg name="x0" value="0"/>
-            <arg name="y0" value="-1"/>
+            <arg name="x0" value="0.4"/>
+            <arg name="y0" value="-0.4"/>
             <arg name="yaw" value="1.57"/>
         </include>
         <param name="amcl/initial_pose_x" value="0" />

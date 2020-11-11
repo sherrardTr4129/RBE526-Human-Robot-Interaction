@@ -129,7 +129,8 @@
     </include> 
 
     <!-- Home the robot -->
-    <node name="home_the_arm" pkg="hri_control" type="control_robot.py" output="screen" respawn="false"/>
+    <node name="control_gui" pkg="hri_control" type="control_gui.py" output="screen" respawn="false"/>
+    <node name="control_right_arm" pkg="hri_control" type="control_right_arm.py" output="screen" respawn="false"/>
     
     <!-- TODO Driver is needed when a real Kinova robot is used-->
     <?ignore
