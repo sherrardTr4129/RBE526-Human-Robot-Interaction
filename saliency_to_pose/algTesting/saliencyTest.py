@@ -5,6 +5,7 @@ import cv2
 import glob
 import numpy as np
 import math
+import operator
 
 def subLists(listA, listB):
     diffList = []
@@ -63,14 +64,35 @@ def findMinimizationDir(imgCenterPt, momentCenterPts):
     countLeft = countNumOverThresh(subListLeft, threshVal)
     countRight = countNumOverThresh(subListRight, threshVal)
 
-    print("Up: " + str(countUp) + " Down: " + str(countDown) + " Left: " + str(countLeft) + " Right: " + str(countRight))
+    dictToSort = {"Up":countUp, "Down":countDown, "Left":countLeft, "Right":countRight}
+    if(dictToSort["Up"] == dictToSort["Down"] and dictToSort["Left"] == dictToSort["Right"]):
+        print("done")
+    elif(dictToSort["Up"] == dictToSort["Down"] and dictToSort["Left"] != dictToSort["Right"]):
+        rightVal = dictToSort["Right"]
+        leftVal = dictToSort["Left"]
 
+        if(rightVal > leftVal):
+            print("go Right")
+        elif(rightVal < leftVal):
+            print("go Left")
+    elif(dictToSort["Up"] != dictToSort["Down"] and dictToSort["Left"] == dictToSort["Right"]):
+        upVal = dictToSort["Up"]
+        downVal = dictToSort["Down"]
+
+        if(upVal > downVal):
+            print("go Up!")
+        elif(upVal < downVal):
+            print("go Down!")
+
+    else:
+        maxVal = max(dictToSort.iteritems(), key=operator.itemgetter(1))[0]
+        print("go " + maxVal + "!")
 def computeSaliencyMap(img):
     
     # define constants
     maxVal = 255
     threshVal = 100
-    minArea = 500
+    minArea = 600
 
     # compute image center
     imgCY = np.size(img, 0)/2
@@ -131,7 +153,7 @@ def computeSaliencyMap(img):
 fileList = glob.glob("/home/sherrardtr/catkin_ws/src/RBE526-Human-Robot-Interaction/saliency_to_pose/algTesting/images/*")
 
 for img in fileList:
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     while(cap.isOpened()):
         ret, frame = cap.read()
         
