@@ -33,12 +33,15 @@ def findMinimizationDir(imgCenterPt, momentCenterPts):
         dist = euclidDist(elem, imgCenterPt)
         initDist.append(dist)
 
-    # compute distance from new location
+    # create four shifted copies of the image center point
+    # in each of the cardinal directions.
     newCenterPtUp = (imgCenterPt[0], imgCenterPt[1] - 50)
     newCenterPtDown = (imgCenterPt[0], imgCenterPt[1] + 50)
     newCenterPtLeft = (imgCenterPt[0] - 50, imgCenterPt[1])
     newCenterPtRight = (imgCenterPt[0] + 50, imgCenterPt[1])
 
+    # find euclidean distance between each of the shifted center points
+    # and each of the saliency contour COM's.
     newDistUp = []
     newDistDown = []
     newDistLeft = []
@@ -64,29 +67,34 @@ def findMinimizationDir(imgCenterPt, momentCenterPts):
     countLeft = countNumOverThresh(subListLeft, threshVal)
     countRight = countNumOverThresh(subListRight, threshVal)
 
+    # create direction count dictionary
     dictToSort = {"Up":countUp, "Down":countDown, "Left":countLeft, "Right":countRight}
+
+    # if moving won't 
     if(dictToSort["Up"] == dictToSort["Down"] and dictToSort["Left"] == dictToSort["Right"]):
-        print("done")
+        return "Done"
+
     elif(dictToSort["Up"] == dictToSort["Down"] and dictToSort["Left"] != dictToSort["Right"]):
         rightVal = dictToSort["Right"]
         leftVal = dictToSort["Left"]
 
         if(rightVal > leftVal):
-            print("go Right")
+            return "Right"
         elif(rightVal < leftVal):
-            print("go Left")
+            return "Left"
     elif(dictToSort["Up"] != dictToSort["Down"] and dictToSort["Left"] == dictToSort["Right"]):
         upVal = dictToSort["Up"]
         downVal = dictToSort["Down"]
 
         if(upVal > downVal):
-            print("go Up!")
+            return "Up"
         elif(upVal < downVal):
-            print("go Down!")
+            return "Down"
 
     else:
         maxVal = max(dictToSort.iteritems(), key=operator.itemgetter(1))[0]
-        print("go " + maxVal + "!")
+        return maxVal
+
 def computeSaliencyMap(img):
     
     # define constants
@@ -146,8 +154,18 @@ def computeSaliencyMap(img):
 
         # find cardinal direction that minimizes distances between 
         # saliency COM and center of image
-        findMinimizationDir(imgCenterPt, momentCenterPts)
-
+        direction = findMinimizationDir(imgCenterPt, momentCenterPts)
+        
+        if(direction == "Up"):
+            cv2.arrowedLine(img, (imgCX, imgCY), (imgCX, imgCY - 100), (0,0,255), 5)
+        elif(direction == "Down"):
+            cv2.arrowedLine(img, (imgCX, imgCY), (imgCX, imgCY + 100), (0,0,255), 5)
+        elif(direction == "Left"):
+            cv2.arrowedLine(img, (imgCX, imgCY), (imgCX - 100, imgCY), (0,0,255), 5)
+        elif(direction == "Right"):
+            cv2.arrowedLine(img, (imgCX, imgCY), (imgCX + 100, imgCY), (0,0,255), 5)
+        elif(direction == "Done"):
+            cv2.putText(img, 'Done!', imgCenterPt, cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         return img
 
 fileList = glob.glob("/home/sherrardtr/catkin_ws/src/RBE526-Human-Robot-Interaction/saliency_to_pose/algTesting/images/*")
