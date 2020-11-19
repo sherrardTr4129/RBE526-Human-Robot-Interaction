@@ -17,8 +17,8 @@ camArmPoseTopic = "/currentCamArmPose"
 camArmPoseGoalTopic = "/camArmPoseGoal"
 
 # uncomment appropriate image topic
-imageTopic = "/trina2_1/right_arm_cam/color/image_raw"
-# imageTopic = "/trina2_1/left_arm_cam/color/image_raw"
+# imageTopic = "/trina2_1/right_arm_cam/color/image_raw"
+imageTopic = "/trina2_1/left_arm_cam/color/image_raw"
 
 # create global Pose message
 global camArmPose
@@ -120,6 +120,7 @@ def computeSaliencyMap(img):
     maxVal = 255
     threshVal = 100
     minArea = 600
+    maxArea = 40000
 
     # compute image center
     imgCY = np.size(img, 0)/2
@@ -139,13 +140,13 @@ def computeSaliencyMap(img):
         # threshold image
         ret, thresh = cv2.threshold(blur, threshVal, maxVal, cv2.THRESH_BINARY)
 
-        contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        _, contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
         # filter detected contours
         filteredContours = []
         for cont in contours:
             area = cv2.contourArea(cont)
-            if(area > minArea):
+            if(area > minArea and area < maxArea):
                 filteredContours.append(cont)
         
         # draw filtered contours
