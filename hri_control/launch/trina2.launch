@@ -30,7 +30,7 @@
 
     <!-- Gazebo environment -->
     <env name="GAZEBO_MODEL_PATH" value="$(find hospital_gazebo)/models:${GAZEBO_MODEL_PATH}" />
-    <arg name="world_name" default="stack"/>
+    <arg name="world_name" default="inspect"/>
     <arg name="world_file" default="$(find hri_control)/map/$(arg world_name).world"/>
     
 
@@ -42,15 +42,6 @@
         <arg name="paused" value="$(arg paused)"/> 
         <arg name="world_name" value="$(arg world_file)"/>
     </include>
-
-    <!-- Start RViz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" if="$(arg start_rviz)"/> 
-
-    <!-- Map Server -->
-    <node name="map_server" pkg="map_server" type="map_server" 
-          args="$(find trina2_navigation)/maps/$(arg world_name).yaml">
-        <param name="frame_id" value="/map" />
-    </node>
 
     <!-- Load robots -->
     <arg name="robot_name_1" default="$(arg robot_name)_1"/>
