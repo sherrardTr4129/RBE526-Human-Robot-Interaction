@@ -196,13 +196,13 @@ class ControlGui(object):
         # must be decimal
 
         joint_goal2 = move_group2.get_current_joint_values()
-        joint_goal2[0] = -2.8
-        joint_goal2[1] = 1.57
-        joint_goal2[2] = 0.0
-        joint_goal2[3] = 1.1
-        joint_goal2[4] = 0.2
-        joint_goal2[5] = 2.015
-        joint_goal2[6] = -3.05
+        joint_goal2[0] = -1
+        joint_goal2[1] = -1.57
+        joint_goal2[2] = 1.57
+        joint_goal2[3] = 2.5
+        joint_goal2[4] = 0.0
+        joint_goal2[5] = -0.9
+        joint_goal2[6] = 1.57
 
         self.move_to_goal(move_group1, joint_goal1, 10)
         self.move_to_goal(move_group2, joint_goal2, 10)
