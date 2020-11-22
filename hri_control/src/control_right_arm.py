@@ -8,7 +8,7 @@ import copy
 import rospy
 import moveit_commander
 import moveit_msgs.msg
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, PoseStamped
 from math import pi
 from std_msgs.msg import String
 from std_srvs.srv import Empty
@@ -138,10 +138,10 @@ def all_close(goal, actual, tolerance):
                (abs(abs(actual[index]-goal[index])-2*pi) > tolerance) :
                 return False
 
-    elif type(goal) is geometry_msgs.msg.PoseStamped:
+    elif type(goal) is PoseStamped:
         return all_close(goal.pose, actual.pose, tolerance)
 
-    elif type(goal) is geometry_msgs.msg.Pose:
+    elif type(goal) is Pose:
         return all_close(pose_to_list(goal), pose_to_list(actual), tolerance)
 
     return True
