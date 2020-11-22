@@ -17,8 +17,8 @@ camArmPoseTopic = "/currentCamArmPose"
 camArmPoseGoalTopic = "/camArmPoseGoal"
 
 # uncomment appropriate image topic
-# imageTopic = "/trina2_1/right_arm_cam/color/image_raw"
-imageTopic = "/trina2_1/left_arm_cam/color/image_raw"
+imageTopic = "/trina2_1/right_arm_cam/color/image_raw"
+# imageTopic = "/trina2_1/left_arm_cam/color/image_raw"
 
 # create global Pose message
 global camArmPose
@@ -118,9 +118,9 @@ def findMinimizationDir(imgCenterPt, momentCenterPts):
 def computeSaliencyMap(img):
     # define constants
     maxVal = 255
-    threshVal = 100
-    minArea = 600
-    maxArea = 40000
+    threshVal = 130
+    minArea = 200
+    maxArea = 50000
 
     # compute image center
     imgCY = np.size(img, 0)/2
@@ -150,7 +150,7 @@ def computeSaliencyMap(img):
                 filteredContours.append(cont)
         
         # draw filtered contours
-        cv2.drawContours(img, filteredContours, -1, (0, 255, 0), -1)
+        cv2.drawContours(img, filteredContours, -1, (0, 255, 0), 1)
         
         # find center of all filter contours
         momentCenterPts = []
@@ -199,8 +199,33 @@ def procImage(img):
     # create new Pose to be used
     goalPose = Pose()
 
+    # crop image
+    width = np.size(img, 1)
+    height = np.size(img, 0)
+    croppedImage = img[0:height - 140, 0:width]
+
     # perform saliency processing
-    img, direction = computeSaliencyMap(img)
+    img, direction = computeSaliencyMap(croppedImage)
+
+    # update goal pose
+    zOffset = 0
+    yOffset = 0
+    if(direction == "Up"):
+        zOffset = 0.01
+    elif(direction == "Down"):
+        zOffset = -0.01
+    elif(direction == "Left"):
+        yOffset = 0.01
+    elif(direction == "Right"):
+        yOffset = 0.01
+
+    goalPose.position.x = camArmPose.position.x 
+    goalPose.position.y = camArmPose.position.y + yOffset
+    goalPose.position.z = camArmPose.position.z + zOffset
+    goalPose.orientation.x = camArmPose.orientation.x
+    goalPose.orientation.y = camArmPose.orientation.y
+    goalPose.orientation.z = camArmPose.orientation.z
+    goalPose.orientation.w = camArmPose.orientation.w
 
     rospy.loginfo(direction)
     cv2.imshow("test", img)
