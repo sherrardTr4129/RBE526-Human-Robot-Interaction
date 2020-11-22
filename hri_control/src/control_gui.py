@@ -16,6 +16,7 @@ from constants import *
 from control_msgs.msg import GripperCommandActionGoal
 from moveit_commander.conversions import pose_to_list
 from hri_control.msg import joint_angle
+from std_msgs.msg import Float32, Float64
 from sensor_msgs.msg import Joy
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 global x,y,z, roll, pitch, yaw, ox, oy, oz, ow
@@ -49,7 +50,7 @@ class ControlGui(object):
         #rospy.Subscriber('/desired_angle_left', joint_angle, self.move_left_arm, queue_size=1)
         #rospy.Subscriber('/desired_angle_right', joint_angle, self.move_right_arm, queue_size=1)
         # Subscriber joystick for left arm
-        rospy.Subscriber('/virtualJoystick', Joy, self.go_to_pose_goal_joy, queue_size=1)
+
         self.pubg = rospy.Publisher('/'+robot_prefix+'/left_arm_robotiq_2f_85_gripper_controller/gripper_cmd/goal',
                                             GripperCommandActionGoal, queue_size=1)
         # Misc variables
@@ -57,6 +58,9 @@ class ControlGui(object):
         self.scene = scene
         self.move_group1 = move_group1
         self.move_group2 = move_group2
+
+        #rospy.Subscriber('/reset_left_arm', Float64, self.home_robot(), queue_size=1)
+        rospy.Subscriber('/virtualJoystick', Joy, self.go_to_pose_goal_joy, queue_size=1)
 
     def send_gripper_cmd(self, pos):
         #rospy.loginfo("Send Gripper Command")
@@ -66,6 +70,10 @@ class ControlGui(object):
         self.pubg.publish(lgmsg)
 
     def go_to_pose_goal_joy(self,joy):
+
+        print("state======================================")
+        print(self.robot.get_current_state())
+
         # ok gripper works
         self.send_gripper_cmd(joy.buttons[0])
 
@@ -146,6 +154,8 @@ class ControlGui(object):
 
 
     def move_left_arm(self,angles):
+
+
         move_group1 = self.move_group1
         joint_goal1 = move_group1.get_current_joint_values()
         joint_goal1[0] = angles.left[0]
@@ -255,7 +265,6 @@ def main():
         # Home robot arm
         interface = ControlGui()
         interface.home_robot()
-        rospy.sleep(5)
         global x, y, z, roll, pitch, yaw, ox, oy, oz, ow
         current_pose = interface.move_group1.get_current_pose().pose
         ox = current_pose.orientation.x
@@ -278,6 +287,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    rate = rospy.Rate(10)
-    while not rospy.is_shutdown():
-        rate.sleep()
+    rospy.spin()

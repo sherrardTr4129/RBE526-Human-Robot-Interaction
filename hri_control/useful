@@ -11,3 +11,21 @@ can postion
 
 trina2 
 0.4 -0.4 0
+
+So, in gazebo, if you check for the pose for a certain link from the left menu. Gazebo will give you a relative pose. However, if you call gazebo service to get the link state, it will return to u global coordinates.
+
+
+Right arm Starting pose
+position: 
+  x: -0.359013667917
+  y: -0.00155690873321
+  z: 1.24176745694
+orientation: 
+  x: 0.531394073464
+  y: 0.543959451468
+  z: 0.462945582713
+  w: 0.455422706166
+
+data: "roll:1.72886066665  yaw:1.59134975948  pitch:0.00336242803369"
+
+

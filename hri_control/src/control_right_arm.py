@@ -9,6 +9,7 @@ import rospy
 import moveit_commander
 import moveit_msgs.msg
 from geometry_msgs.msg import Pose
+import geometry_msgs.msg
 from math import pi
 from std_msgs.msg import String
 from std_srvs.srv import Empty
@@ -50,6 +51,7 @@ class ControlRightArm(object):
         self.pubg = rospy.Publisher('/'+robot_prefix+'/left_arm_robotiq_2f_85_gripper_controller/gripper_cmd/goal',
                                             GripperCommandActionGoal, queue_size=1)
         self.pub_right_pose = rospy.Publisher('/currentCamArmPose', Pose ,queue_size=1)
+        self.pub_angle_pose = rospy.Publisher('/currentCamArmPose_angle', String ,queue_size=1)
         # Misc variables
         self.robot = robot
         self.scene = scene
@@ -59,10 +61,17 @@ class ControlRightArm(object):
     def pub_current_pose(self):
         move_group = self.move_group2  # right arm
         current_pose = move_group.get_current_pose().pose
+        angle_pose = move_group.get_current_rpy()
+        yaw = angle_pose[2]
+        roll = angle_pose[0]
+        pitch = angle_pose[1]
+        string = "roll:"+str(roll) +"  yaw:"+str(yaw)+"  pitch:"+str(pitch)
+        self.pub_angle_pose.publish(string)
         self.pub_right_pose.publish(current_pose)
 
 
     def go_to_pose_goal(self, goal):
+        rospy.loginfo("move cam arm")
         move_group = self.move_group2  # right arm
 
         move_group.set_pose_target(goal)
