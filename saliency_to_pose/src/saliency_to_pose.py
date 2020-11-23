@@ -6,6 +6,7 @@
 import rospy
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose
+from tf.transformations import quaternion_from_euler
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -208,24 +209,25 @@ def procImage(img):
     img, direction = computeSaliencyMap(croppedImage)
 
     # update goal pose
+    xOffset = 0
     zOffset = 0
-    yOffset = 0
     if(direction == "Up"):
-        zOffset = 0.01
+        zOffset = 0.05
     elif(direction == "Down"):
-        zOffset = -0.01
+        zOffset = -0.05
     elif(direction == "Left"):
-        yOffset = 0.01
+        xOffset = 0.05
     elif(direction == "Right"):
-        yOffset = 0.01
+        xOffset = -0.05
 
-    goalPose.position.x = camArmPose.position.x 
-    goalPose.position.y = camArmPose.position.y + yOffset
+    goalPose.position.x = camArmPose.position.x + xOffset 
+    goalPose.position.y = camArmPose.position.y 
     goalPose.position.z = camArmPose.position.z + zOffset
-    goalPose.orientation.x = camArmPose.orientation.x
-    goalPose.orientation.y = camArmPose.orientation.y
-    goalPose.orientation.z = camArmPose.orientation.z
-    goalPose.orientation.w = camArmPose.orientation.w
+
+    goalPose.orientation.x = 0.707
+    goalPose.orientation.y = 0.707
+    goalPose.orientation.z = 0
+    goalPose.orientation.w = 0
 
     rospy.loginfo(direction)
     cv2.imshow("test", img)
