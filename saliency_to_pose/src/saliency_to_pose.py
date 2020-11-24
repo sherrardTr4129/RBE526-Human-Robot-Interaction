@@ -209,22 +209,22 @@ def procImage(img):
     img, direction = computeSaliencyMap(croppedImage)
 
     # update goal pose
-    xOffset = 0
     zOffset = 0
+    yOffset = 0
     if(direction == "Up"):
-        zOffset = 0.05
+        yOffset = 0.05
     elif(direction == "Down"):
-        zOffset = -0.05
+        yOffset = -0.05
     elif(direction == "Left"):
-        xOffset = 0.05
+        zOffset = 0.05
     elif(direction == "Right"):
-        xOffset = -0.05
+        zOffset = -0.05
 
     # y-axis is up and down
     # z-axis is side to side
     goalPose.position.x = camArmPose.position.x
-    goalPose.position.y = camArmPose.position.y 
-    goalPose.position.z = camArmPose.position.z - 0.01 
+    goalPose.position.y = camArmPose.position.y + yOffset
+    goalPose.position.z = camArmPose.position.z + zOffset
 
     goalPose.orientation.x = camArmPose.orientation.x
     goalPose.orientation.y = camArmPose.orientation.y
