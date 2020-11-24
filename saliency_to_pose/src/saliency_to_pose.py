@@ -220,14 +220,16 @@ def procImage(img):
     elif(direction == "Right"):
         xOffset = -0.05
 
-    goalPose.position.x = camArmPose.position.x + xOffset 
+    # y-axis is up and down
+    # z-axis is side to side
+    goalPose.position.x = camArmPose.position.x
     goalPose.position.y = camArmPose.position.y 
-    goalPose.position.z = camArmPose.position.z + zOffset
+    goalPose.position.z = camArmPose.position.z - 0.01 
 
-    goalPose.orientation.x = 0.707
-    goalPose.orientation.y = 0.707
-    goalPose.orientation.z = 0
-    goalPose.orientation.w = 0
+    goalPose.orientation.x = camArmPose.orientation.x
+    goalPose.orientation.y = camArmPose.orientation.y
+    goalPose.orientation.z = camArmPose.orientation.z
+    goalPose.orientation.w = camArmPose.orientation.w
 
     rospy.loginfo(direction)
     cv2.imshow("test", img)
