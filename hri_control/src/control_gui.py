@@ -199,9 +199,9 @@ class ControlGui(object):
         joint_goal2[0] = -3.9
         joint_goal2[1] = -1.57
         joint_goal2[2] = 1.57
-        joint_goal2[3] = -0.7
+        joint_goal2[3] = -1.5
         joint_goal2[4] = 0.0
-        joint_goal2[5] = -0.3
+        joint_goal2[5] = 0.8
         joint_goal2[6] = 1.57
 
         self.move_to_goal(move_group1, joint_goal1, 10)

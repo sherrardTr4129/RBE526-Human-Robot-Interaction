@@ -30,7 +30,7 @@
 
     <!-- Gazebo environment -->
     <env name="GAZEBO_MODEL_PATH" value="$(find hospital_gazebo)/models:${GAZEBO_MODEL_PATH}" />
-    <arg name="world_name" default="inspect"/>
+    <arg name="world_name" default="crackInspection"/>
     <arg name="world_file" default="$(find hri_control)/map/$(arg world_name).world"/>
     
 

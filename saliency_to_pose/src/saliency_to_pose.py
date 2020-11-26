@@ -18,7 +18,7 @@ camArmPoseTopic = "/currentCamArmPose"
 camArmPoseGoalTopic = "/camArmPoseGoal"
 
 # uncomment appropriate image topic
-imageTopic = "/trina2_1/right_arm_cam/color/image_raw"
+imageTopic = "/trina2_1/right_arm_cam/color/image_raw_throttle"
 # imageTopic = "/trina2_1/left_arm_cam/color/image_raw"
 
 # create global Pose message
@@ -139,7 +139,7 @@ def computeSaliencyMap(img):
         blur = cv2.GaussianBlur(saliencyMap, (5, 5), 0)
 
         # threshold image
-        ret, thresh = cv2.threshold(blur, threshVal, maxVal, cv2.THRESH_BINARY)
+        ret, thresh = cv2.threshold(blur, threshVal, maxVal, cv2.THRESH_BINARY_INV)
 
         _, contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
@@ -212,13 +212,13 @@ def procImage(img):
     zOffset = 0
     yOffset = 0
     if(direction == "Up"):
-        yOffset = 0.05
+        yOffset = 0.005
     elif(direction == "Down"):
-        yOffset = -0.05
+        yOffset = -0.005
     elif(direction == "Left"):
-        zOffset = 0.05
+        zOffset = 0.005
     elif(direction == "Right"):
-        zOffset = -0.05
+        zOffset = -0.005
 
     # y-axis is up and down
     # z-axis is side to side
