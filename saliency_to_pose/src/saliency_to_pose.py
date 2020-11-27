@@ -217,6 +217,9 @@ def procImage(img):
     # create new Pose to be used
     goalPose = Pose()
 
+    # define singularity radius
+    singRad = 1.6
+
     # crop image
     width = np.size(img, 1)
     height = np.size(img, 0)
@@ -239,12 +242,6 @@ def procImage(img):
 
     # y-axis is up and down
     # z-axis is side to side
-
-    # compute current euclian distance from origin
-    pt1 = (0,0,0)
-    pt2 = (camArmPose.position.x, camArmPose.position.y, camArmPose.position.z)
-    print(euclidDist3D(pt2, pt1))
-
     goalPose.position.x = camArmPose.position.x
     goalPose.position.y = camArmPose.position.y + yOffset
     goalPose.position.z = camArmPose.position.z + zOffset
@@ -254,6 +251,16 @@ def procImage(img):
     goalPose.orientation.z = camArmPose.orientation.z
     goalPose.orientation.w = camArmPose.orientation.w
 
+    # compute current euclidian distance from origin using updated pose
+    pt1 = (0,0,0)
+    pt2 = (camArmPose.position.x, camArmPose.position.y, camArmPose.position.z)
+    dist3D = euclidDist3D(pt2, pt1)
+
+    # if we are approaching singularity area, home the robot
+    if(dist3D >= singRad):
+        goalPose = genHomePose()
+        rospy.loginfo("approaching singularity! homeing...")
+    
     rospy.loginfo(direction)
     cv2.imshow("test", img)
     cv2.waitKey(1)
