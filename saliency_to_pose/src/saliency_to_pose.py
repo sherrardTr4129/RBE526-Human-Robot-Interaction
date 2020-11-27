@@ -46,6 +46,23 @@ def countNumOverThresh(diffList, threshVal):
 def euclidDist(pt1, pt2):
     return math.sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2)
 
+def euclidDist3D(pt1, pt2):
+    return math.sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2 + (pt2[2] - pt1[2])**2)
+
+def genHomePose():
+    homePose = Pose()
+
+    homePose.position.x = 0.6970225646
+    homePose.position.y = -0.271691875861
+    homePose.position.z = 1.14988583336
+
+    homePose.orientation.x = 0.487226619719
+    homePose.orientation.y = 0.487589462867
+    homePose.orientation.z = 0.512234180102
+    homePose.orientation.w = 0.512330832054
+
+    return homePose
+
 def findMinimizationDir(imgCenterPt, momentCenterPts):
     threshVal = 40
     # compute initial distances
@@ -222,6 +239,12 @@ def procImage(img):
 
     # y-axis is up and down
     # z-axis is side to side
+
+    # compute current euclian distance from origin
+    pt1 = (0,0,0)
+    pt2 = (camArmPose.position.x, camArmPose.position.y, camArmPose.position.z)
+    print(euclidDist3D(pt2, pt1))
+
     goalPose.position.x = camArmPose.position.x
     goalPose.position.y = camArmPose.position.y + yOffset
     goalPose.position.z = camArmPose.position.z + zOffset
