@@ -232,13 +232,13 @@ def procImage(img):
     zOffset = 0
     yOffset = 0
     if(direction == "Up"):
-        yOffset = 0.005
+        yOffset = 0.01
     elif(direction == "Down"):
-        yOffset = -0.005
+        yOffset = -0.01
     elif(direction == "Left"):
-        zOffset = 0.005
+        zOffset = 0.01
     elif(direction == "Right"):
-        zOffset = -0.005
+        zOffset = -0.01
 
     # y-axis is up and down
     # z-axis is side to side
@@ -246,10 +246,11 @@ def procImage(img):
     goalPose.position.y = camArmPose.position.y + yOffset
     goalPose.position.z = camArmPose.position.z + zOffset
 
-    goalPose.orientation.x = camArmPose.orientation.x
-    goalPose.orientation.y = camArmPose.orientation.y
-    goalPose.orientation.z = camArmPose.orientation.z
-    goalPose.orientation.w = camArmPose.orientation.w
+    # manually set orientation to home orientation
+    goalPose.orientation.x = 0.487226619719
+    goalPose.orientation.y = 0.487589462867
+    goalPose.orientation.z = 0.512234180102
+    goalPose.orientation.w = 0.512330832054
 
     # compute current euclidian distance from origin using updated pose
     pt1 = (0,0,0)
