@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>514</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>14</y>
+      <x>20</x>
+      <y>4</y>
       <width>160</width>
       <height>471</height>
      </rect>
@@ -57,7 +57,7 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>raw</string>
+        <string>roll</string>
        </property>
       </widget>
      </item>
@@ -89,8 +89,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>210</y>
+      <x>300</x>
+      <y>200</y>
       <width>161</width>
       <height>101</height>
      </rect>
@@ -105,7 +105,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>514</width>
      <height>22</height>
     </rect>
    </property>
