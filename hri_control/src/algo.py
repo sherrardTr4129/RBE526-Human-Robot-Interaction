@@ -107,7 +107,9 @@ class algo:
             cv2.imwrite('algo_test/ls'+str(self.Ls)+'.jpg',self.right_cv_image)
         yaw= 1.57-self.turn
         rospy.loginfo("yaw:" + str(yaw))
+        # if Starting Pose 1
         #arr = quaternion_from_euler(1.57, 0, yaw)
+        # if Starting Pose 2
         arr = quaternion_from_euler(2.1, 0, yaw)
         ox = arr[0]
         oy = arr[1]
@@ -137,6 +139,7 @@ class algo:
 
     def home_robot(self):
         newPose = Pose()
+        # Starting Pose 1
         # x =0.6
         # y = -0.1
         # z=0.8
@@ -144,6 +147,7 @@ class algo:
         # p = 0
         # yaw = 1.57
 
+        # Starting Pose 2
         x = -0.05
         y = 0
         z = 1.37
