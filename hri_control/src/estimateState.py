@@ -50,7 +50,9 @@ class estPos:
             d_z = ee_mid_z - self.can_pos[i][2]
             distance = min(distance, m.sqrt(d_x * d_x + d_y * d_y + d_z * d_z))
 
-        d_f = abs(self.left_ee_post[1] - self.right_ee_post[1])
+        d_f = abs(self.left_ee_post[0] - self.right_ee_post[0])
+	rospy.loginfo(distance)
+	rospy.loginfo("df:"+str(d_f))
         if distance < 0.1 and d_f <= 0.08 and ee_mid_z > 0.9:
             self.state = 'stack'
         elif distance < 0.1 and d_f > 0.08:
@@ -75,7 +77,7 @@ class estPos:
 
     def pub_cam_pose(self):
         newPose = Pose()
-        self.state = 'grab'
+        
         if self.state == 'find':
             x = -0.05
             y = 0
@@ -124,7 +126,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(comm_rate)
 
     while not rospy.is_shutdown():
-        estPos.pub_cam_pose()
+        #estPos.pub_cam_pose()
         estPos.print_all_pos()
         estPos.get_left_ee_pos()
         estPos.cal_distance()
