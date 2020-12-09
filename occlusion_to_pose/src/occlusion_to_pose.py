@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Author: Jialin Song
+# Template made by: Trevor Sherrard
 # Project: HRI Autonomous Camera Teleoperation Assistance
 # Since: November 10, 2020
 
@@ -478,6 +479,7 @@ def conclusion_state():
             return 1
         else:
             return 3
+        _, cokeArea, cokeCOM, gripperArea, gripperCOM, occluderArea, occluderCOM = procImage(BGR_IMAGE)
 
 
 def run_finite_state_machine():
@@ -492,17 +494,19 @@ def run_finite_state_machine():
             if state is 1:
                 state = approach_state()
             elif state is 2:
-                # state = conclusion_state()
+                state = conclusion_state()
                 rospy.loginfo("conclusion state")
             elif state is 3:
                 rospy.loginfo("occlusion state")
-                # state = occlude_state()
+                state = occlude_state()
             elif state is 100:
                 rospy.loginfo("Process finished.......")
                 break
         else:
             # rospy.loginfo("occlusion state")
             state = occlude_state()
+        rospy.sleep(2)
+        _, cokeArea, cokeCOM, gripperArea, gripperCOM, occluderArea, occluderCOM = procImage(BGR_IMAGE)
 
 
 def startNode():
